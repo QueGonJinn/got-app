@@ -33,6 +33,6 @@ body {
     background-position: right center;
 }
 
-.hide {
-    display: none;
+.toggle__random:focus {
+    outline: none;
 }
