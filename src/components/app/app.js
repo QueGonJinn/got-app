@@ -2,19 +2,23 @@ import React, {Component} from 'react';
 import {Col, Row, Container} from 'reactstrap';
 import Header from '../header';
 import RandomChar from '../randomChar';
-import CharacterPage from '../characterPage';
 import ErrorMessage from '../errorMessage';
+import {CharacterPage, BooksPage, HousesPage, BooksItem} from '../pages';
+import gotService from '../../services/gotService';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
 
 
 export default class App extends Component {
 
+    gotService = new gotService();
+
     state = {
         showRandomChar: true,        
-        error: false
+        error: false,
+        slectedHouse: 20
     }
 
-    componentDidCatch() {
-        
+    componentDidCatch() {        
         this.setState({
             error: true
         })
@@ -37,7 +41,8 @@ export default class App extends Component {
 
         const char = this.state.showRandomChar ? <RandomChar/> : null;
         return(
-            <> 
+            <Router> 
+                <div className='app'>
                 <Container>
                     <Header />
                 </Container>
@@ -50,25 +55,18 @@ export default class App extends Component {
                                 onClick={this.toggleRandomChar}>Toggle random character</button>
                         </Col>
                     </Row>
-                    <CharacterPage/>
-                    {/* <Row>
-                        <Col md='6'>
-                            <ItemList onCharSelected={this.onCharSelected}/>
-                        </Col>
-                        <Col md='6'>
-                            <CharDetails charId={this.state.selectedChar}/>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col md='6'>
-                            <ItemList onCharSelected={this.onCharSelected}/>
-                        </Col>
-                        <Col md='6'>
-                            <CharDetails charId={this.state.selectedChar}/>
-                        </Col>
-                    </Row>      */}
+                    <Route path='/' exact component={() => <h1>Welcome to GOT DB</h1>} />
+                    <Route path='/characters' component={CharacterPage}/>                    
+                    <Route path='/houses' component={HousesPage}/>
+                    <Route path='/books' exact component={BooksPage}/>
+                    <Route path='/books/:id' render={({match}) => {
+                        const {id} = match.params
+                        return <BooksItem bookId={id}/>}} />
+                    
+                   
                 </Container>
-            </>
+                </div>
+            </Router>
         )
     }
 }
